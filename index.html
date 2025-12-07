@@ -23,15 +23,25 @@
             bottom: 1rem;
             z-index: 50;
         }
-        /* Hide number input arrows (Chrome, Safari, Edge, Opera) */
+        /* Hide number input arrows */
         #browser-count-input::-webkit-inner-spin-button,
         #browser-count-input::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
-        /* Hide number input arrows (Firefox) */
         #browser-count-input {
             -moz-appearance: textfield;
+        }
+        /* Style for the actual iframe content area */
+        .browser-content-container {
+            flex-grow: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        .browser-content-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
@@ -40,18 +50,21 @@
     <div id="app-container" class="min-h-screen bg-slate-900 text-slate-200 p-4 md:p-8 font-sans pb-24 relative">
         <div class="max-w-7xl mx-auto">
             
-            <!-- !!! IMPORTANT DISCLAMER: Simulating Internet Access !!! -->
-            <div class="mb-6 p-4 bg-yellow-600/20 text-yellow-300 rounded-xl border border-yellow-600/40 text-sm font-medium flex items-center gap-3 shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-alert"><path d="M20.66 10.999c.905-.71 1.054-1.928.344-2.834L12 2l-8.995 6.165c-.71 2.834-.56 1.928.344 2.834 2.768 2.39 8.01 6.892 8.01 6.892s5.242-4.502 8.005-6.892z"/><path d="M12 11v3"/><path d="M12 17h.01"/></svg>
-                <span>
-                    **PLEASE NOTE (Development Sandbox):** This is a **Simulation App**. Due to security restrictions (iFrame sandboxing), these browser nodes **cannot load real, external websites (Live Internet)**. Content is mocked based on URL keywords.
-                </span>
+            <!-- !!! CRITICAL SECURITY WARNING (Red/Laal Rang) !!! -->
+            <div class="mb-6 p-4 bg-red-800/20 text-red-300 rounded-xl border-2 border-red-600/60 text-base font-bold flex items-center gap-3 shadow-lg pulse-animation">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                <div class="flex flex-col">
+                    <span class="text-xl text-red-400">Security Restriction Alert!</span>
+                    <span>
+                        **IMPORTANT:** The embedded browsers **CANNOT** load high-security external sites (like `google.com`, `youtube.com`). This is blocked by the external site's policy (`X-Frame-Options` / `CSP`). This tool is designed for **your own staging/dev domains** only.
+                    </span>
+                </div>
             </div>
             
-            <!-- Global Search Bar (New Feature) -->
+            <!-- Global Search Bar -->
             <div class="mb-8 p-4 bg-slate-800 rounded-xl shadow-xl border border-slate-700">
                 <h2 class="text-xl font-semibold text-blue-400 mb-3 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rocket"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.97-2.07 1-3.34-1-.5-1.72-1.29-2-2.66-.02-.11.02-.23.08-.34l.79-1.39c.32-.47.88-.73 1.44-.73h.3c.69 0 1.25.46 1.5.95l1.4 2.8c.24.47.78.78 1.35.78h.83c.57 0 1.1-.31 1.35-.78l1.4-2.8c.25-.49.81-.95 1.5-.95h.3c.56 0 1.12.26 1.44.73l.79 1.39c.06.11.1.23.08.34-1 .5-1.72 1.29-2 2.66-.03.11.02.23.08.34l.79 1.39c.32-.47.88-.73 1.44-.73h.3c.69 0 1.25.46 1.5.95l1.4 2.8c.24.47.78.78 1.35.78h.83c.57 0 1.1-.31 1.35-.78l1.4-2.8c.25-.49.81-.95 1.5-.95h.3c.56 0 1.12.26 1.44.73l.79 1.39c.06.11.1.23.08.34-1 .5-1.72 1.29-2 2.66-.02-.11.02-.23.08-.34l.79-1.39c.32-.47.88-.73 1.44-.73h.3c.69 0 1.25.46 1.5.95l1.4 2.8c.24.47.78.78 1.35.78h.83c.57 0 1.1-.31 1.35-.78l1.4-2.8c.25-.49.81-.95 1.5-.95h.3c.56 0 1.12.26 1.44.73l.79 1.39c.06.11.1.23.08.34-1 .5-1.72 1.29-2 2.66-.02-.11.02-.23.08-.34l.79-1.39c.32-.47.88-.73 1.44-.73h.3c.69 0 1.25.46 1.5.95l1.4 2.8c.24.47.78.78 1.35.78h.83c.57 0 1.1-.31 1.35-.78l1.4-2.8c.25-.49.81-.95 1.5-.95h.3c.56 0 1.12.26 1.44.73l.79 1.39c.06.11.1.23.08.34z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rocket"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.97-2.07 1-3.34-1-.5-1.72-1.29-2-2.66-.02-.11.02-.23.08-.34l.79-1.39c.32-.47.88-.73 1.44-.73h.3c.69 0 1.25.46 1.5.95l1.4 2.8c.24.47.78.78 1.35.78h.83c.57 0 1.1-.31 1.35-.78l1.4-2.8c.25-.49.81-.95 1.5-.95h.3c.56 0 1.12.26 1.44.73l.79 1.39c.06.11.1.23.08.34l.79 1.39c.32-.47.88-.73 1.44-.73h.3c.69 0 1.25.46 1.5.95l1.4 2.8c.24.47.78.78 1.35.78h.83c.57 0 1.1-.31 1.35-.78l1.4-2.8c.25-.49.81-.95 1.5-.95h.3c.56 0 1.12.26 1.44.73l.79 1.39c.06.11.1.23.08.34-1 .5-1.72 1.29-2 2.66-.03.11.02.23.08.34l.79 1.39c.32-.47.88-.73 1.44-.73h.3c.69 0 1.25.46 1.5.95l1.4 2.8c.24.47.78.78 1.35.78h.83c.57 0 1.1-.31 1.35-.78l1.4-2.8c.25-.49.81-.95 1.5-.95h.3c.56 0 1.12.26 1.44.73l.79 1.39c.06.11.1.23.08.34l.79 1.39c.32-.47.88-.73 1.44-.73h.3c.69 0 1.25.46 1.5.95l1.4 2.8c.24.47.78.78 1.35.78h.83c.57 0 1.1-.31 1.35-.78l1.4-2.8c.25-.49.81-.95 1.5-.95h.3c.56 0 1.12.26 1.44.73l.79 1.39c.06.11.1.23.08.34-1 .5-1.72 1.29-2 2.66-.02-.11.02-.23.08-.34l.79-1.39c.32-.47.88-.73 1.44-.73h.3c.69 0 1.25.46 1.5.95l1.4 2.8c.24.47.78.78 1.35.78h.83c.57 0 1.1-.31 1.35-.78l1.4-2.8c.25-.49.81-.95 1.5-.95h.3c.56 0 1.12.26 1.44.73l.79 1.39c.06.11.1.23.08.34z"/></svg>
                     Global Command Input
                 </h2>
                 <form id="global-url-form" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -62,7 +75,7 @@
                             id="global-url-input"
                             placeholder="Enter URL (e.g., localhost:8000/test or staging.example.com)"
                             class="flex-1 outline-none text-white font-medium placeholder-slate-600 bg-transparent"
-                            value="https://www.google.com"
+                            value="https://localhost:3000"
                         />
                     </div>
                     <button 
@@ -91,7 +104,7 @@
                         System Online
                     </span>
                     <button class="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors border border-slate-700" title="Open Console">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-terminal"><polyline points="4 17 10 17 10 10"></polyline><line x1="12" x2="20" y1="12" y2="12"></line></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-terminal"><polyline points="4 17 10 17 10 10"></polyline><line x1="12" x2="20" y1="12" y2="12"></line></polyline></svg>
                     </button>
                 </div>
             </header>
@@ -166,19 +179,18 @@
         
         // Browser template options
         const browserTemplates = [
-            { title: 'New Search', initialUrl: 'google.com/search' },
-            { title: 'Code Editor', initialUrl: 'localhost:3000/code' },
-            { title: 'Design Gallery', initialUrl: 'dribbble.com/design' },
-            { title: 'Dashboard', initialUrl: 'dashboard.app/view' },
-            { title: 'Analytics', initialUrl: 'analytics.google.com' }
+            { title: 'Local Dev (Example)', initialUrl: 'http://localhost:3000/home' },
+            { title: 'Staging Server (Example)', initialUrl: 'https://staging.my-app.com' },
+            { title: 'External Search (Blocked)', initialUrl: 'https://www.google.com/search' },
+            { title: 'Design System (Example)', initialUrl: 'http://docs.styleguide.com' },
         ];
 
         // --- State Management ---
         let browsers = [
-            { id: 1, title: 'Dev Environment', initialUrl: 'localhost:3000/code', currentUrl: 'localhost:3000/code', inputUrl: 'localhost:3000/code', isLoading: false, isMaximized: false, history: ['localhost:3000/code'], historyIndex: 0 },
-            { id: 2, title: 'Search Engine', initialUrl: 'google.com/search', currentUrl: 'google.com/search', inputUrl: 'google.com/search', isLoading: false, isMaximized: false, history: ['google.com/search'], historyIndex: 0 },
-            { id: 3, title: 'Design System', initialUrl: 'dribbble.com/design', currentUrl: 'dribbble.com/design', inputUrl: 'dribbble.com/design', isLoading: false, isMaximized: false, history: ['dribbble.com/design'], historyIndex: 0 },
-            { id: 4, title: 'Server Monitor', initialUrl: 'aws.amazon.com/console', currentUrl: 'aws.amazon.com/console', inputUrl: 'aws.amazon.com/console', isLoading: false, isMaximized: false, history: ['aws.amazon.com/console'], historyIndex: 0 },
+            { id: 1, title: 'Local Dev', initialUrl: 'http://localhost:3000/code', currentUrl: 'http://localhost:3000/code', inputUrl: 'http://localhost:3000/code', isLoading: false, isMaximized: false, history: ['http://localhost:3000/code'], historyIndex: 0 },
+            { id: 2, title: 'Staging Server', initialUrl: 'https://staging.my-app.com/test', currentUrl: 'https://staging.my-app.com/test', inputUrl: 'https://staging.my-app.com/test', isLoading: false, isMaximized: false, history: ['https://staging.my-app.com/test'], historyIndex: 0 },
+            { id: 3, title: 'External Site (Blocked)', initialUrl: 'https://www.google.com', currentUrl: 'https://www.google.com', inputUrl: 'https://www.google.com', isLoading: false, isMaximized: false, history: ['https://www.google.com'], historyIndex: 0 },
+            { id: 4, title: 'Another Dev View', initialUrl: 'http://127.0.0.1:8080/monitor', currentUrl: 'http://127.0.0.1:8080/monitor', inputUrl: 'http://127.0.0.1:8080/monitor', isLoading: false, isMaximized: false, history: ['http://127.0.0.1:8080/monitor'], historyIndex: 0 },
         ];
         
         const gridContainer = document.getElementById('browser-grid');
@@ -208,111 +220,75 @@
         // --- Core Functions ---
 
         /**
-         * Renders mock content based on URL keywords.
-         * NOTE: Real internet access is not possible due to security restrictions (Same-Origin Policy). This function renders simulated content.
+         * Renders the iframe and the overlay for security blockage.
          * @param {number} id - Browser ID.
          * @param {string} url - Current URL.
          * @param {boolean} isLoading - Loading state.
          * @returns {string} - HTML string of the content.
          */
         function renderContent(id, url, isLoading) {
-            if (isLoading) {
-                return `
-                    <div class="flex flex-col items-center justify-center h-full bg-gray-50 text-gray-400 animate-pulse">
-                        ${icons.globe.replace('48', '32').replace('48', '32').replace('lucide-globe', 'w-12 h-12 mb-2 opacity-50')}
-                        <p>Fetching data... (Simulated Loading)</p>
-                    </div>
-                `;
-            }
-
-            const cleanUrl = (url || '').toLowerCase();
-
-            if (cleanUrl.includes('code') || cleanUrl.includes('dev') || cleanUrl.includes('localhost')) {
-                return `
-                    <div class="h-full bg-[#1e1e1e] p-4 text-green-400 font-mono text-sm overflow-auto">
-                        <p class="mb-2"><span class="text-blue-400">const</span> <span class="text-yellow-300">initProtocol</span> = <span class="text-purple-400">async</span> () ={'>'} {'{'}</p>
-                        <p class="pl-4 mb-2"><span class="text-blue-400">await</span> connectToGrid({'{'} id: <span class="text-orange-300">${id}</span> {'}'});</p>
-                        <p class="pl-4 mb-2">console.<span class="text-yellow-300">log</span>(<span class="text-orange-300">"Browser ${id} Dev Node Active"</span>);</p>
-                        <p class="pl-4 mb-2"><span class="text-gray-500">// Simulating Live Code Output...</span></p>
-                        <p>{'}'}</p>
-                        <div class="mt-4 p-3 bg-black/30 rounded border border-green-900/50">
-                            <div class="text-xs text-yellow-300 mb-1 font-semibold">Live Server Status: <span class="text-green-400">Running</span></div>
-                            ${Array.from({ length: 5 }).map((_, i) => `
-                                <div class="text-xs opacity-70 text-slate-300">
-                                    [${new Date().toLocaleTimeString()}] HTTP GET /api/v${i} -> 200 OK
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-
-            if (cleanUrl.includes('search') || cleanUrl.includes('google')) {
-                return `
-                    <div class="h-full bg-white flex flex-col items-center justify-center p-8">
-                        <h1 class="text-4xl font-bold text-gray-700 mb-6 tracking-tighter">G<span class="text-red-500">o</span>o<span class="text-blue-500">g</span>l<span class="text-green-500">e</span> Sim</h1>
-                        <div class="w-full max-w-md flex border hover:shadow-md transition-shadow rounded-full p-3 px-5 border-gray-300">
-                            ${icons.search.replace('20', '16').replace('20', '16').replace('lucide-search', 'text-gray-400 w-5 h-5 mr-3')}
-                            <input placeholder="Search the web (Simulated)..." class="w-full outline-none text-gray-700" value="${url.split('/search')[1] || ''}" />
-                        </div>
-                        <p class="text-sm text-gray-400 mt-4">Simulated results for: <span class="font-semibold text-gray-600">${url}</span></p>
-                    </div>
-                `;
-            }
-
-            if (cleanUrl.includes('design') || cleanUrl.includes('dribbble')) {
-                return `
-                    <div class="h-full bg-gray-50 p-4 overflow-auto grid grid-cols-2 gap-3">
-                        ${[1,2,3,4,5,6].map(i => `
-                            <div key="${i}" class="p-2 bg-white rounded-lg shadow-md border border-gray-100">
-                                <div class="aspect-square bg-gray-200 rounded-md mb-1 animate-pulse"></div>
-                                <div class="h-3 w-3/4 bg-gray-300 rounded"></div>
-                            </div>
-                        `).join('')}
-                        <p class="col-span-2 text-center text-xs text-gray-500 mt-2 border-t pt-2">Design Gallery Mockup from ${url}</p>
-                    </div>
-                `;
-            }
+            // Check if the URL is a commonly blocked external site
+            const isBlocked = url.includes('google.com') || url.includes('youtube.com') || url.includes('facebook.com');
             
-            if (cleanUrl.includes('analytics') || cleanUrl.includes('dashboard')) {
-                 return `
-                    <div class="h-full bg-white flex flex-col justify-between p-4 text-gray-700">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold text-indigo-600">Analytics Dashboard</h3>
-                            <div class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">LIVE DATA (Mock)</div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3 flex-1">
-                            <div class="p-3 bg-indigo-50 rounded-lg">
-                                <p class="text-2xl font-bold text-indigo-700">14,200</p>
-                                <p class="text-sm text-indigo-500">Total Views</p>
-                            </div>
-                            <div class="p-3 bg-red-50 rounded-lg">
-                                <p class="text-2xl font-bold text-red-700">+12.5%</p>
-                                <p class="text-sm text-red-500">Growth (Week)</p>
-                            </div>
-                        </div>
-                        <div class="h-24 mt-4 bg-gray-100 rounded-lg flex items-center justify-center text-sm text-gray-500">
-                            Graph/Chart Area (Simulated)
-                        </div>
-                    </div>
-                `;
+            // Determine the URL to pass to the iframe. Ensure it starts with http(s)
+            let safeUrl = url.startsWith('http') ? url : `https://${url}`;
+            
+            // Use a local placeholder URL for demonstration safety/consistency 
+            // if a commonly blocked site is entered, to avoid console spam.
+            // On a real server, we would let the iframe try to load the actual URL.
+            // For this sandbox, we stick to the safety.
+            if (isBlocked) {
+                 // For the sandbox, we show a friendly placeholder instead of a blank iframe
+                 safeUrl = "about:blank"; 
             }
 
-            // Default "Home" View
             return `
-                <div class="h-full bg-gradient-to-br from-indigo-50 to-blue-50 flex flex-col items-center justify-center text-center p-6">
-                    <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg mb-4 text-white">
-                        ${icons.layout.replace('32', '24').replace('32', '24')}
+                <!-- The actual iframe used to load the content -->
+                <iframe 
+                    id="iframe-${id}" 
+                    src="${safeUrl}" 
+                    title="Browser Node ${id} - ${safeUrl}"
+                    sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals"
+                    onload="handleIframeLoad(${id}, true)"
+                    onerror="handleIframeLoad(${id}, false)"
+                    class="transition-opacity duration-300 ${isLoading ? 'opacity-20' : 'opacity-100'}"
+                ></iframe>
+
+                <!-- Loading Overlay -->
+                ${isLoading ? `
+                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/70 backdrop-blur-sm text-gray-700 z-10">
+                        ${icons.rotateCw.replace('16', '24').replace('16', '24').replace('lucide-rotate-cw', 'w-8 h-8 mb-3 text-indigo-500 animate-spin')}
+                        <p class="font-semibold">Loading Page...</p>
+                        <p class="text-xs text-gray-500 mt-1">Attempting to load: ${url}</p>
                     </div>
-                    <h2 class="text-2xl font-bold text-slate-800">Browser Node #${id}</h2>
-                    <p class="text-slate-500 mt-2">Attempting to connect to: <span class="font-mono text-sm">${url}</span></p>
-                    <p class="text-xs text-red-500 mt-1 font-semibold">(External Internet blocked - Showing default content)</p>
-                    <button class="mt-6 px-4 py-2 bg-white border border-slate-200 rounded-lg shadow-sm text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
-                        View Documentation
-                    </button>
-                </div>
+                ` : ''}
+
+                <!-- Blocked Content Overlay (Appears if an external high-security site is requested) -->
+                ${isBlocked ? `
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 bg-red-50/90 text-red-700 z-20">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-keyhole"><circle cx="12" cy="16" r="1"/><rect width="18" height="12" x="3" y="10" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>
+                        <h3 class="text-lg font-bold mt-2">Content Blocked by Security Policy</h3>
+                        <p class="text-sm">
+                            The website at <span class="font-mono">${url}</span> does not allow itself to be embedded in another site (X-Frame-Options/CSP).
+                            **Try your own local or staging URLs instead!**
+                        </p>
+                    </div>
+                ` : ''}
             `;
         }
+        
+        /**
+         * Updates the loading state when an iframe finishes loading (or fails).
+         */
+        window.handleIframeLoad = function(id, success) {
+            // Note: Iframe load/error events are unreliable for cross-origin security blocks.
+            // We use this primarily for mock loading simulation to clear the spinner.
+            updateBrowserState(id, { isLoading: false });
+            if (!success) {
+                console.warn(`Browser ${id} failed to load or was blocked by SOP/XFO.`);
+            }
+        }
+
 
         /**
          * Creates the full HTML structure for a single browser window.
@@ -326,48 +302,48 @@
             const isForwardDisabled = historyIndex >= history.length - 1;
             
             return `
-                <div id="browser-${id}" data-id="${id}" class="browser-window flex flex-col bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-200/50 transition-all duration-500 ease-in-out ${isMaximized ? 'browser-maximized' : 'relative h-[350px] md:h-[400px] hover:shadow-indigo-500/20'}">
+                <div id="browser-${id}" data-id="${id}" class="browser-window flex flex-col bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-slate-700/50 transition-all duration-500 ease-in-out ${isMaximized ? 'browser-maximized' : 'relative h-[350px] md:h-[450px] hover:shadow-indigo-500/20'}">
                     
                     <!-- Browser Toolbar -->
-                    <div class="bg-slate-100 border-b border-slate-200 p-2 flex items-center gap-2 select-none">
+                    <div class="bg-slate-700 border-b border-slate-600 p-2 flex items-center gap-2 select-none">
                         <!-- Traffic Lights -->
                         <div class="flex gap-1.5 mr-2">
-                            <div class="w-3 h-3 rounded-full bg-red-400 hover:bg-red-500 cursor-pointer" onclick="handleClose(${id})" title="Close Browser"></div>
-                            <div class="w-3 h-3 rounded-full bg-yellow-400 hover:bg-yellow-500 cursor-pointer" title="Minimize"></div>
-                            <div class="w-3 h-3 rounded-full bg-green-400 hover:bg-green-500 cursor-pointer" onclick="handleToggleMaximize(${id})" title="Maximize"></div>
+                            <div class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 cursor-pointer" onclick="handleClose(${id})" title="Close Browser"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 cursor-pointer" title="Minimize"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 cursor-pointer" onclick="handleToggleMaximize(${id})" title="Maximize"></div>
                         </div>
 
                         <!-- Navigation Controls -->
-                        <div class="flex items-center gap-1 text-slate-500">
-                            <button onclick="handleHistoryNavigation(${id}, -1)" class="p-1 hover:bg-slate-200 rounded-md transition-colors ${isBackDisabled ? 'opacity-30 cursor-not-allowed' : ''}" ${isBackDisabled ? 'disabled' : ''}>${icons.arrowLeft}</button>
-                            <button onclick="handleHistoryNavigation(${id}, 1)" class="p-1 hover:bg-slate-200 rounded-md transition-colors ${isForwardDisabled ? 'opacity-30 cursor-not-allowed' : ''}" ${isForwardDisabled ? 'disabled' : ''}>${icons.arrowRight}</button>
-                            <button onclick="handleRefresh(${id})" class="p-1 hover:bg-slate-200 rounded-md transition-colors ${isLoading ? 'animate-spin' : ''}" title="Refresh">
+                        <div class="flex items-center gap-1 text-slate-400">
+                            <button onclick="handleHistoryNavigation(${id}, -1)" class="p-1 hover:bg-slate-600 rounded-md transition-colors ${isBackDisabled ? 'opacity-30 cursor-not-allowed' : ''}" ${isBackDisabled ? 'disabled' : ''}>${icons.arrowLeft}</button>
+                            <button onclick="handleHistoryNavigation(${id}, 1)" class="p-1 hover:bg-slate-600 rounded-md transition-colors ${isForwardDisabled ? 'opacity-30 cursor-not-allowed' : ''}" ${isForwardDisabled ? 'disabled' : ''}>${icons.arrowRight}</button>
+                            <button onclick="handleRefresh(${id})" class="p-1 hover:bg-slate-600 rounded-md transition-colors ${isLoading ? 'animate-spin' : ''}" title="Refresh">
                                 ${icons.rotateCw}
                             </button>
                         </div>
 
                         <!-- Address Bar -->
-                        <form onsubmit="handleIndividualNavigate(event, ${id})" class="flex-1 flex items-center bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm shadow-sm focus-within:ring-2 focus-within:ring-indigo-500/50 transition-all">
-                            ${icons.lock.replace('12', '10').replace('12', '10').replace('lucide-lock', 'text-green-600 mr-2')}
-                            <span class="text-slate-400 mr-1">https://</span>
+                        <form onsubmit="handleIndividualNavigate(event, ${id})" class="flex-1 flex items-center bg-slate-900 border border-slate-600 rounded-lg px-3 py-1.5 text-sm shadow-inner focus-within:ring-2 focus-within:ring-indigo-500/50 transition-all">
+                            ${icons.lock.replace('12', '10').replace('12', '10').replace('lucide-lock', 'text-green-500 mr-2')}
+                            <span class="text-slate-500 mr-1">URL:</span>
                             <input 
                                 type="text" 
                                 value="${inputUrl}"
                                 oninput="handleInputUrl(event, ${id})"
-                                class="flex-1 outline-none text-slate-700 font-medium placeholder-slate-400 bg-transparent"
+                                class="flex-1 outline-none text-white font-medium placeholder-slate-600 bg-transparent"
                             />
                         </form>
 
                         <!-- Window Controls -->
                         <div class="flex items-center gap-2 text-slate-400 ml-1">
-                            <button onclick="handleToggleMaximize(${id})" class="p-1 hover:text-slate-600" title="${isMaximized ? 'Minimize' : 'Maximize'}">
+                            <button onclick="handleToggleMaximize(${id})" class="p-1 hover:text-slate-200" title="${isMaximized ? 'Minimize' : 'Maximize'}">
                                 ${isMaximized ? icons.minimize2 : icons.maximize2}
                             </button>
                         </div>
                     </div>
 
-                    <!-- Browser Content Area -->
-                    <div class="flex-1 relative overflow-hidden bg-white">
+                    <!-- Browser Content Area (Now contains the real iframe) -->
+                    <div class="browser-content-container">
                         ${renderContent(id, currentUrl, isLoading)}
                     </div>
                 </div>
@@ -422,7 +398,7 @@
             return { 
                 currentUrl: newUrl, 
                 inputUrl: newUrl,
-                isLoading: false,
+                isLoading: true, // Always set loading to true when navigating
                 history: newHistory,
                 historyIndex: newHistoryIndex
             };
@@ -442,7 +418,7 @@
                 ...randomTemplate, 
                 currentUrl: randomTemplate.initialUrl, 
                 inputUrl: randomTemplate.initialUrl, 
-                isLoading: false, 
+                isLoading: true, 
                 isMaximized: false, 
                 history: [randomTemplate.initialUrl],
                 historyIndex: 0
@@ -473,24 +449,20 @@
             let newCount = parseInt(event.target.value, 10);
             const currentCount = browsers.length;
 
-            // Input validation
             if (isNaN(newCount) || newCount < 0) {
                 newCount = 0;
             }
             
-            // Synchronize the input field with the validated value
             event.target.value = newCount;
             
             if (newCount === currentCount) return;
 
             if (newCount > currentCount) {
-                // Add browsers
                 const diff = newCount - currentCount;
                 for (let i = 0; i < diff; i++) {
                     browsers.push(createNewBrowserObject());
                 }
             } else if (newCount < currentCount) {
-                // Remove browsers
                 browsers = browsers.slice(0, newCount);
             }
             
@@ -506,7 +478,7 @@
         window.handleGlobalNavigate = function(event) {
             event.preventDefault();
             const globalInput = document.getElementById('global-url-input');
-            const newUrl = globalInput.value.trim();
+            let newUrl = globalInput.value.trim();
 
             if (!newUrl || browsers.length === 0) {
                 if (browsers.length === 0) {
@@ -514,24 +486,24 @@
                 }
                 return;
             }
-
-            // 1. Set all browsers to loading state
-            browsers = browsers.map(b => ({ ...b, isLoading: true }));
-            renderBrowsers(); // Immediate visual feedback
-
-            // 2. Simulate network delay
+            
+            // 1. Update state for all browsers
+            browsers = browsers.map(b => {
+                const updatedFields = performNavigation(b, newUrl);
+                return { 
+                    ...b, 
+                    ...updatedFields,
+                };
+            });
+            renderBrowsers();
+            console.log(`Global navigation attempted to: ${newUrl} for all ${browsers.length} nodes.`);
+            
+            // Since iframes handle the loading, we can stop the loading state 
+            // after a small delay to handle immediate UI updates. The iframe load 
+            // event listener (or lack thereof) will handle the rest.
             setTimeout(() => {
-                browsers = browsers.map(b => {
-                    // Update history and URL
-                    const updatedFields = performNavigation(b, newUrl);
-                    return { 
-                        ...b, 
-                        ...updatedFields,
-                        isLoading: false // Stop loading
-                    };
-                });
+                browsers = browsers.map(b => ({ ...b, isLoading: false }));
                 renderBrowsers();
-                console.log(`Global navigation complete to: ${newUrl} for all ${browsers.length} nodes.`);
             }, 1200);
         };
 
@@ -539,31 +511,23 @@
          * Updates the temporary URL input state for individual browser navigation.
          */
         window.handleInputUrl = function(event, id) {
+            // Only update the input value in state, not currentUrl yet
             updateBrowserState(id, { inputUrl: event.target.value });
         };
 
         /**
-         * Simulates navigation when an individual browser's form is submitted.
+         * Handles individual browser navigation submission.
          */
         window.handleIndividualNavigate = function(event, id) {
             event.preventDefault();
             const browser = getBrowserState(id);
             if (!browser) return;
 
-            // 1. Start loading
-            updateBrowserState(id, { isLoading: true });
-
-            // 2. Simulate network delay
-            setTimeout(() => {
-                // Update history and URL
-                const updatedFields = performNavigation(browser, browser.inputUrl);
-                
-                // 3. Update state
-                updateBrowserState(id, { 
-                    ...updatedFields,
-                    isLoading: false,
-                });
-            }, 800);
+            // Update history, set loading state
+            const updatedFields = performNavigation(browser, browser.inputUrl);
+            updateBrowserState(id, { 
+                ...updatedFields,
+            });
         };
         
         /**
@@ -577,19 +541,19 @@
 
             if (newIndex >= 0 && newIndex < browser.history.length) {
                 const newUrl = browser.history[newIndex];
-
+                
+                // Update state and re-render
                 updateBrowserState(id, {
-                    isLoading: true // Start loading
+                    currentUrl: newUrl,
+                    inputUrl: newUrl, // Also update the input field
+                    historyIndex: newIndex,
+                    isLoading: true // Start loading indicator
                 });
 
+                // Stop loading indicator after a short delay
                 setTimeout(() => {
-                    updateBrowserState(id, {
-                        currentUrl: newUrl,
-                        inputUrl: newUrl, // Also update the input field
-                        historyIndex: newIndex,
-                        isLoading: false
-                    });
-                }, 400); // Shorter delay for history
+                     updateBrowserState(id, { isLoading: false });
+                }, 400); 
             }
         };
 
@@ -598,6 +562,9 @@
          */
         window.handleRefresh = function(id) {
             updateBrowserState(id, { isLoading: true });
+            
+            // In a real application, you might reload the iframe here, but
+            // simply showing the loading state is sufficient for the simulation.
             setTimeout(() => {
                 updateBrowserState(id, { isLoading: false });
             }, 1000);
