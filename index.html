@@ -1,219 +1,314 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-View Local Testing Grid</title>
+    <title>Zaid Gaming Hub | Elite Gaming Arena</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React and Babel CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Inter font ka upyog */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f7f9fb; /* light background */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
-        .browser-container {
-            border: 1px solid #e2e8f0; /* slate-200 */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
-            border-radius: 0.75rem; /* rounded-xl */
-            overflow: hidden;
+        .animate-scroll {
+            animation: scroll 30s linear infinite;
             display: flex;
-            flex-direction: column;
-            background-color: #ffffff;
+            width: fit-content;
         }
-        .browser-content {
-            flex-grow: 1;
-            height: 400px; /* Default height for visibility */
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .browser-content iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .animate-fade-in {
+            animation: fade-in 1s ease-out forwards;
         }
-        /* Grid layout for responsiveness */
-        @media (min-width: 1024px) {
-            #browser-grid {
-                grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop */
-            }
+        ::-webkit-scrollbar {
+            width: 8px;
         }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0ea5e9;
+            border-radius: 10px;
+        }
+        body {
+            background-color: #020617;
+            margin: 0;
+            overflow-x: hidden;
+            font-family: sans-serif;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        #a{
+          height: 100px;
+          width:100px;
+          overflow: hidden;
+          scale: 1;
+        }
+        #z{
+          overflow: hidden;
+          width: 400px;
+          gap: 30px;
+        }
+        
     </style>
 </head>
 <body>
+    <div id="root"></div>
 
-    <div class="min-h-screen p-4 md:p-8">
-        <div class="max-w-7xl mx-auto">
-            
-            <!-- Header -->
-            <header class="mb-8 text-center">
-                <h1 class="text-4xl font-extrabold text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-700">
-                    Local/Staging Test Grid (स्थानीय जाँच ग्रिड)
-                </h1>
-                <p class="text-gray-500 mt-2 text-lg">
-                    एक ही समय में विभिन्न views (Localhost, Staging, Production) की जाँच करें।
-                </p>
-            </header>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-            <!-- !!! CRITICAL SECURITY WARNING (Red/Laal Rang) !!! -->
-            <div class="mb-6 p-4 bg-red-100 text-red-700 rounded-xl border border-red-300 text-base font-bold flex items-center gap-3 shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                <div class="flex flex-col">
-                    <span class="text-xl text-red-600">अति आवश्यक सूचना (Critical Note):</span>
-                    <span>
-                        वेबसाइट सुरक्षा नियमों (X-Frame-Options/CSP) के कारण, **Google, YouTube, Facebook** जैसी बड़ी वेबसाइटें **किसी भी हाल में** यहाँ लोड नहीं हो सकती हैं। यह टूल **केवल आपके अपने Localhost या Staging URLs** के लिए बनाया गया है।
-                    </span>
-                </div>
-            </div>
+        const App = () => {
+            const [scrolled, setScrolled] = useState(false);
+            const [copiedId, setCopiedId] = useState(null);
 
-            <!-- Global Search Bar -->
-            <div class="mb-10 p-4 bg-white rounded-xl shadow-lg border border-gray-200">
-                <form id="global-url-form" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                    <div class="flex-1 flex items-center bg-gray-50 border border-gray-300 rounded-lg p-3 text-base shadow-inner focus-within:ring-2 focus-within:ring-indigo-500/50 transition-all">
-                        <span class="text-gray-500 mr-3 font-semibold">URL:</span>
-                        <input 
-                            type="text" 
-                            id="global-url-input"
-                            placeholder="Localhost या Staging URL दर्ज करें (e.g., http://localhost:3000/home)"
-                            class="flex-1 outline-none text-gray-800 font-medium placeholder-gray-400 bg-transparent"
-                            value="http://localhost:3000"
-                        />
+            const socialLinks = {
+                tiktok: "https://www.tiktok.com/@badnam1888",
+                instagram: "https://www.instagram.com/crazyy4357",
+                snapchat: "https://www.snapchat.com/add/crazy71285"
+            };
+
+            const games = [
+                { id: 1, name: "Free Fire Max", category: "Battle Royale", players: "1M+", image: "freefair.jpg", roomId: "FF-992831", host: "Fighter.fff", hostAvatar: "GARENA.png", playStore: "https://play.google.com/store/apps/details?id=com.dts.freefiremax" },
+                { id: 2, name: "Yalla Ludo Pro", category: "Social Board", players: "500k+", image: "yalla.jpg", roomId: "28931953100", host: "Crazy", hostAvatar: "IMG-20251228-WA0004.jpg", playStore: "https://play.google.com/store/apps/details?id=com.yalla.ludo" },
+                { id: 3, name: "PUBG Mobile", category: "Tactical Shooter", players: "2M+", image: "pubg.jpg", roomId: "52236068155", host: "Top charsi", hostAvatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-v0_Jxec13-h2SuIrj3ebvbx2ZZsGQvbqYw&s", playStore: "https://play.google.com/store/apps/details?id=com.tencent.ig" }
+            ];
+
+            const winners = [
+                { name: "Slayer_DX", prize: "$500", game: "Free Fire" },
+                { name: "LudoKing_01", prize: "$200", game: "Yalla Ludo" },
+                { name: "Ninja_Op", prize: "$450", game: "PUBG" }
+            ];
+
+            useEffect(() => {
+                const handleScroll = () => setScrolled(window.scrollY > 50);
+                window.addEventListener('scroll', handleScroll);
+                if (window.lucide) window.lucide.createIcons();
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            // Re-initialize icons after every render if needed
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            });
+
+            const copyToClipboard = (id) => {
+                const el = document.createElement('textarea');
+                el.value = id;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                setCopiedId(id);
+                setTimeout(() => setCopiedId(null), 2000);
+            };
+
+            return (
+                <div className="min-h-screen text-white">
+                    {/* Background Glows */}
+                    <div className="fixed inset-0 pointer-events-none z-0">
+                        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-cyan-500/10 blur-[150px] rounded-full"></div>
+                        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 blur-[150px] rounded-full"></div>
                     </div>
-                    <button 
-                        type="submit" 
-                        class="shrink-0 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-lg shadow-indigo-500/30 transition-all active:scale-[0.98]"
-                    >
-                        सभी 3 पैनल्स पर नेविगेट करें
-                    </button>
-                </form>
-            </div>
-            
-            <!-- Dynamic Grid Container -->
-            <div id="browser-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-300">
-                <!-- Browser windows will be injected here by JavaScript -->
-            </div>
 
-        </div>
-    </div>
-
-    <script>
-        // Default URLs for the three panels
-        let browsers = [
-            { id: 1, title: 'Local Development (Chrome View)', currentUrl: 'http://localhost:3000/dev', userAgent: 'Chrome' },
-            { id: 2, title: 'Staging Server (Firefox View)', currentUrl: 'http://localhost:3000/staging', userAgent: 'Firefox' },
-            { id: 3, title: 'Production Backup (Safari View)', currentUrl: 'http://localhost:3000/prod', userAgent: 'Safari' },
-        ];
-        
-        const gridContainer = document.getElementById('browser-grid');
-
-        /**
-         * Creates the full HTML structure for a single browser window.
-         * @param {object} browser - Browser state object.
-         * @returns {string} - Browser window's HTML string.
-         */
-        function createBrowserWindow(browser) {
-            const { id, title, currentUrl, userAgent } = browser;
-            
-            // NOTE: The iframe is now loading the actual (local/staging) URL. 
-            // We use 'about:blank' only for blocked external sites, but since 
-            // we are focusing on local testing, we let it try the URL.
-            const safeUrl = currentUrl.startsWith('http') ? currentUrl : `https://${currentUrl}`;
-
-            return `
-                <div id="browser-${id}" class="browser-container h-[450px]">
-                    
-                    <!-- Browser Toolbar -->
-                    <div class="bg-gray-100 border-b border-gray-200 p-3 flex items-center gap-2 select-none">
-                        <span class="text-xs font-semibold text-gray-700 mr-2">${userAgent}:</span>
-                        <div class="flex-1 flex items-center bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-sm shadow-inner">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe text-indigo-500 mr-2"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                            <span class="text-gray-800 truncate" title="${currentUrl}">${currentUrl}</span>
+                    {/* Navbar */}
+                    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/90 backdrop-blur-xl border-b border-white/10 py-3' : 'bg-transparent py-6'}`}>
+                        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-gradient-to-br from-cyan-400 to-blue-600 p-2.5 rounded-xl shadow-[0_0_15px_rgba(34,211,238,0.4)]">
+                                    <i data-lucide="gamepad-2" className="w-6 h-6 text-white"></i>
+                                </div>
+                                <span className="text-2xl font-black italic tracking-tighter">CRAZY<span className="text-cyan-400">HUB</span></span>
+                            </div>
+                            <div className="hidden lg:flex items-center gap-4 bg-white/5 px-4 py-2 rounded-full border border-white/10">
+                                <img src="junaid.jpg" className="w-6 h-6 rounded-full border border-cyan-500" />
+                                <span className="text-[10px] font-black tracking-widest uppercase"> Crazy</span>
+                            </div>
                         </div>
-                        <button onclick="handleRefresh(${id})" class="p-1.5 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors" title="Refresh">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-cw"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.76 2.87"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.76-2.87"/><path d="M21 21v-5h-5"/></svg>
-                        </button>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <section className="relative pt-48 pb-24 px-6 z-10">
+                        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-20">
+                            <div className="flex-1 text-center lg:text-left">
+                                <div id="z" className="inline-flex items-center gap-3 bg-cyan-500/10 border border-cyan-500/20 px-5 py-2 rounded-2xl mb-8 animate-fade-in">
+                                    <img id="a" src="junaid.jpg" className="w-8 h-8 rounded-full border-2 border-cyan-500" alt="Zaid" />
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 leading-none mb-1">Founder & CEO</p>
+                                        <p className="text-sm font-black text-white italic leading-none">Crazy</p>
+                                    </div>
+                                    <i data-lucide="badge-check" className="text-cyan-400 w-5 h-5 ml-2"></i>
+                                </div>
+
+                                <h1 className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 tracking-tighter leading-[0.85] uppercase italic">
+                                    OWN THE <br />
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600">ARENA</span>
+                                </h1>
+                                <p className="text-gray-400 text-lg md:text-xl max-w-xl mb-12 leading-relaxed">
+                                    Gaming Hub, experience elite tournaments and fast-paced rooms for Free Fire and Yalla Ludo. Join now and prove your gaming skills at the highest level.
+                                </p>
+                                
+                                <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start">
+                                    
+                                </div>
+                            </div>
+
+                            <div className="flex-1 relative">
+                                <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-[3rem] blur-2xl opacity-20"></div>
+                                <div className="relative rounded-[3.5rem] overflow-hidden border-4 border-white/10 p-2 bg-slate-900 rotate-2 hover:rotate-0 transition-all duration-700">
+                                    <img src="junaid1.png" className="w-full aspect-[3.3/5] object-cover rounded-[3rem]" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                                    <div className="absolute bottom-10 left-10 right-10 glass p-6 rounded-[2rem]">
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex items-center gap-4">
+                                                <div className="bg-cyan-500 p-3 rounded-2xl"><i data-lucide="target" className="text-black"></i></div>
+                                                <div>
+                                                    <p className="text-[10px] text-cyan-400 font-black uppercase tracking-widest">Ranked Player</p>
+                                                    <p className="text-xl font-black italic">GRANDMASTER</p>
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">K/D Ratio</p>
+                                                <p className="text-xl font-black">5.42</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Winners Ticker */}
+                    <div className="bg-cyan-500 py-4 overflow-hidden whitespace-nowrap border-y border-white/10 transform -rotate-1 relative z-20 shadow-2xl">
+                        <div className="animate-scroll space-x-12">
+                            {[...winners, ...winners, ...winners].map((w, i) => (
+                                <div key={i} className="flex items-center gap-4 text-slate-950 font-black italic uppercase">
+                                    <i data-lucide="star" className="w-5 h-5 fill-current"></i>
+                                    <span>{w.name} won {w.prize} in {w.game}</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
-                    <!-- Browser Content Area (Real iFrame) -->
-                    <div class="browser-content">
-                        <!-- 
-                            Sandboxing is removed to allow cross-origin content when possible (e.g. for user's own staging servers) 
-                            But be aware that Google/YouTube will still be blocked by their own server settings.
-                        -->
-                        <iframe 
-                            id="iframe-${id}" 
-                            src="${safeUrl}" 
-                            title="Browser Node ${id} - ${safeUrl}"
-                            onload="handleIframeLoad(${id}, true)"
-                            onerror="handleIframeLoad(${id}, false)"
-                        ></iframe>
-                    </div>
+                    {/* Games Grid */}
+                    <section className="py-32 px-6 bg-slate-950">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="mb-20">
+                                <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">HOT GAMES</h2>
+                                <p className="text-cyan-400 font-bold tracking-[0.4em] uppercase mt-2 italic">Official Rooms by CRAZY</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                                {games.map(game => (
+                                    <div key={game.id} className="group relative h-[600px] rounded-[3.5rem] overflow-hidden border border-white/10 transition-all duration-500 hover:border-cyan-500/50 bg-slate-900">
+                                        <img src={game.image} className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-1000" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+                                        
+                                        <div className="absolute inset-0 p-10 flex flex-col justify-end">
+                                            <div className="flex items-center gap-3 mb-6 glass p-3 rounded-2xl">
+                                                <img src={game.hostAvatar} className="w-10 h-10 rounded-full border border-cyan-500" />
+                                                <div>
+                                                    <p className="text-[10px] text-cyan-400 font-black uppercase tracking-widest">Room Host</p>
+                                                    <p className="text-sm font-bold">{game.host}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <span className="bg-cyan-500 text-black text-[10px] font-black uppercase px-3 py-1 rounded-full">{game.category}</span>
+                                                <span className="text-xs font-bold text-white/60">🔥 {game.players}</span>
+                                            </div>
+
+                                            <h3 className="text-4xl font-black mb-4 italic uppercase leading-none">{game.name}</h3>
+                                            
+                                            <div className="flex gap-3">
+                                                <div className="flex-1 bg-white/5 border border-white/10 h-14 rounded-2xl flex items-center justify-between px-6 font-mono overflow-hidden">
+                                                    <span className="text-cyan-400 font-black tracking-widest text-lg">{game.roomId}</span>
+                                                    <button onClick={() => copyToClipboard(game.roomId)} className="text-white hover:text-cyan-400 transition-colors">
+                                                        <i data-lucide={copiedId === game.roomId ? "check" : "copy"} className="w-5 h-5"></i>
+                                                    </button>
+                                                </div>
+                                                <a href={game.playStore} target="_blank" className="w-14 h-14 bg-cyan-600 rounded-2xl flex items-center justify-center hover:bg-cyan-500 transition-all active:scale-95">
+                                                    <i data-lucide="download" className="w-6 h-6"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Social Media */}
+                    <section className="py-32 px-6 bg-[#020617]">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="text-center mb-20">
+                                <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter mb-4">ZAID ON <span className="text-cyan-400">SOCIALS</span></h2>
+                                <p className="text-gray-500 font-bold tracking-[0.4em] uppercase italic">Join the community</p>
+                            </div>
+
+                            <div id="in" className="grid grid-cols-1 md:grid-cols-3 gap-8" >
+                                {/* TikTok */}
+                                <div className="group glass p-10 rounded-[3rem] hover:-translate-y-2 transition-all duration-500">
+                                    <div className="w-16 h-16 bg-black border border-white/10 rounded-2xl flex items-center justify-center mb-8"><i data-lucide="music-2" className="text-pink-500 w-8 h-8"></i></div>
+                                    <h3 className="text-3xl font-black italic uppercase mb-2">TikTok</h3>
+                                    <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-8">Short Clips & Gameplay</p>
+                                    <a href={socialLinks.tiktok} target="_blank" className="block w-full text-center bg-white text-black py-5 rounded-[1.5rem] font-black uppercase tracking-widest hover:bg-gray-200 transition-colors shadow-xl shadow-white/5">Watch Clips</a>
+                                </div>
+
+                                {/* Instagram */}
+                                <div className="group glass p-10 rounded-[3rem] hover:-translate-y-2 transition-all duration-500">
+                                    <div className="w-16 h-16 bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] rounded-2xl flex items-center justify-center mb-8"><i data-lucide="instagram" className="text-white w-8 h-8"></i></div>
+                                    <h3 className="text-3xl font-black italic uppercase mb-2">Instagram</h3>
+                                    <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-8">Stories & Giveaways</p>
+                                    <a href={socialLinks.instagram} target="_blank" className="block w-full text-center bg-gradient-to-r from-[#ee2a7b] to-[#6228d7] text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest hover:opacity-90 transition-colors shadow-xl shadow-pink-500/20">Follow Zaid</a>
+                                </div>
+
+                                {/* Snapchat */}
+                                <div className="group glass p-10 rounded-[3rem] hover:-translate-y-2 transition-all duration-500">
+                                    <div className="w-16 h-16 bg-[#FFFC00] rounded-2xl flex items-center justify-center mb-8"><i data-lucide="ghost" className="text-black w-8 h-8 fill-current"></i></div>
+                                    <h3 className="text-3xl font-black italic uppercase mb-2">Snapchat</h3>
+                                    <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-8">Behind The Scenes</p>
+                                    <a href={socialLinks.snapchat} target="_blank" className="block w-full text-center bg-[#FFFC00] text-black py-5 rounded-[1.5rem] font-black uppercase tracking-widest hover:bg-yellow-400 transition-colors shadow-xl shadow-yellow-500/20">Add Zaid</a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="py-20 px-6 border-t border-white/5">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+                            <div className="text-center md:text-left">
+                                <div className="flex items-center gap-3 mb-4 justify-center md:justify-start">
+                                    <div className="bg-cyan-500 p-2 rounded-lg"><i data-lucide="gamepad-2"></i></div>
+                                    <span className="text-2xl font-black italic">GAMING<span className="text-cyan-400">HUB</span></span>
+                                </div>
+                                <p className="text-gray-600 text-xs font-black uppercase tracking-[0.3em]">© 2024 GamingHub Pakistan | Managed by Zaid Gamer</p>
+                            </div>
+                            <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                                <a href={socialLinks.tiktok} target="_blank" className="hover:text-cyan-400 transition-colors">TikTok</a>
+                                <a href={socialLinks.instagram} target="_blank" className="hover:text-cyan-400 transition-colors">Instagram</a>
+                                <a href={socialLinks.snapchat} target="_blank" className="hover:text-cyan-400 transition-colors">Snapchat</a>
+                            </div>
+                        </div>
+                    </footer>
                 </div>
-            `;
-        }
-
-        /**
-         * Rerenders the entire browser grid.
-         */
-        function renderBrowsers() {
-            gridContainer.innerHTML = browsers.map(createBrowserWindow).join('');
-        }
-
-        /**
-         * Navigates all browsers using the Global URL input.
-         */
-        window.handleGlobalNavigate = function(event) {
-            event.preventDefault();
-            const globalInput = document.getElementById('global-url-input');
-            let newUrl = globalInput.value.trim();
-
-            if (!newUrl) {
-                console.error('कृपया URL दर्ज करें।');
-                return;
-            }
-            
-            // URL correction
-            if (!newUrl.startsWith('http://') && !newUrl.startsWith('https://')) {
-                newUrl = 'http://' + newUrl; // Defaulting to http for local dev
-            }
-
-            // 1. Update state for all browsers
-            browsers = browsers.map(b => ({
-                ...b, 
-                currentUrl: newUrl,
-            }));
-            
-            // 2. Rerender the UI to update the iframe src attribute
-            renderBrowsers();
-            console.log(`सभी ${browsers.length} पैनल्स पर ${newUrl} नेविगेट करने का प्रयास किया गया।`);
-        };
-        
-        /**
-         * Simulates a browser refresh by reloading the iframe.
-         */
-        window.handleRefresh = function(id) {
-            const iframe = document.getElementById(`iframe-${id}`);
-            if (iframe) {
-                // Force a reload of the iframe source
-                iframe.src = iframe.src;
-                console.log(`Browser ${id} Refreshing: ${iframe.src}`);
-            }
+            );
         };
 
-        // Iframe load handler (mostly for debugging)
-        window.handleIframeLoad = function(id, success) {
-            if (!success) {
-                console.warn(`Browser ${id} load failed or was blocked. Check Console for details.`);
-            }
-        }
-
-        // --- Initial Load ---
-        document.addEventListener('DOMContentLoaded', () => {
-            renderBrowsers();
-            // Global Navigation Listener
-            document.getElementById('global-url-form').addEventListener('submit', handleGlobalNavigate);
-        });
-
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
